@@ -4,11 +4,7 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /Map1
         - /Sensing1/LiDAR1/ConcatenatePointCloud1/Autocompute Value Bounds1
-        - /Perception1
-        - /Perception1/Segmentation1
-        - /Perception1/Segmentation1/NoGroundPointCloud1
       Splitter Ratio: 0.557669460773468
     Tree Height: 228
   - Class: rviz_common/Selection
@@ -330,7 +326,7 @@ Visualization Manager:
             lanelet_id: true
             left_lane_bound: true
             right_lane_bound: true
-            road_lanelets: true
+            road_lanelets: false
           Topic:
             Depth: 5
             Durability Policy: Transient Local
@@ -1030,7 +1026,11 @@ Visualization Manager:
               Enabled: true
               Name: RouteArea
               Namespaces:
-                {}
+                goal_lanelets: true
+                lane_start_bound: true
+                left_lane_bound: true
+                right_lane_bound: true
+                route_lanelets: true
               Topic:
                 Depth: 5
                 Durability Policy: Transient Local
@@ -1090,10 +1090,10 @@ Visualization Manager:
                 Alpha: 1
                 Color: 230; 230; 50
                 Offset from BaseLink: 0
-                Rear Overhang: 1.0299999713897705
+                Rear Overhang: 0.25
                 Value: false
-                Vehicle Length: 4.769999980926514
-                Vehicle Width: 1.8300000429153442
+                Vehicle Length: 2.140000104904175
+                Vehicle Width: 1.1799999475479126
               View Path:
                 Alpha: 0.9990000128746033
                 Constant Width: false
@@ -1151,10 +1151,10 @@ Visualization Manager:
                             Alpha: 1
                             Color: 230; 230; 50
                             Offset from BaseLink: 0
-                            Rear Overhang: 1.0299999713897705
+                            Rear Overhang: 0.25
                             Value: false
-                            Vehicle Length: 4.769999980926514
-                            Vehicle Width: 1.8300000429153442
+                            Vehicle Length: 2.140000104904175
+                            Vehicle Width: 1.1799999475479126
                           View Path:
                             Alpha: 0.4000000059604645
                             Constant Width: false
@@ -1515,10 +1515,10 @@ Visualization Manager:
                             Alpha: 1
                             Color: 230; 230; 50
                             Offset from BaseLink: 0
-                            Rear Overhang: 1.0299999713897705
+                            Rear Overhang: 0.25
                             Value: false
-                            Vehicle Length: 4.769999980926514
-                            Vehicle Width: 1.8300000429153442
+                            Vehicle Length: 2.140000104904175
+                            Vehicle Width: 1.1799999475479126
                           View Path:
                             Alpha: 0.30000001192092896
                             Constant Width: false
@@ -1619,10 +1619,10 @@ Visualization Manager:
                             Alpha: 1
                             Color: 230; 230; 50
                             Offset from BaseLink: 0
-                            Rear Overhang: 1.0299999713897705
+                            Rear Overhang: 0.25
                             Value: false
-                            Vehicle Length: 4.769999980926514
-                            Vehicle Width: 1.8300000429153442
+                            Vehicle Length: 2.140000104904175
+                            Vehicle Width: 1.1799999475479126
                           View Path:
                             Alpha: 0.30000001192092896
                             Constant Width: false
@@ -1671,10 +1671,10 @@ Visualization Manager:
                             Alpha: 1
                             Color: 230; 230; 50
                             Offset from BaseLink: 0
-                            Rear Overhang: 1.0299999713897705
+                            Rear Overhang: 0.25
                             Value: false
-                            Vehicle Length: 4.769999980926514
-                            Vehicle Width: 1.8300000429153442
+                            Vehicle Length: 2.140000104904175
+                            Vehicle Width: 1.1799999475479126
                           View Path:
                             Alpha: 0.30000001192092896
                             Constant Width: false
@@ -1827,10 +1827,10 @@ Visualization Manager:
                             Alpha: 1
                             Color: 230; 230; 50
                             Offset from BaseLink: 0
-                            Rear Overhang: 1.0299999713897705
+                            Rear Overhang: 0.25
                             Value: false
-                            Vehicle Length: 4.769999980926514
-                            Vehicle Width: 1.8300000429153442
+                            Vehicle Length: 2.140000104904175
+                            Vehicle Width: 1.1799999475479126
                           View Path:
                             Alpha: 0.30000001192092896
                             Constant Width: false
@@ -1879,10 +1879,10 @@ Visualization Manager:
                             Alpha: 1
                             Color: 230; 230; 50
                             Offset from BaseLink: 0
-                            Rear Overhang: 1.0299999713897705
+                            Rear Overhang: 0.25
                             Value: false
-                            Vehicle Length: 4.769999980926514
-                            Vehicle Width: 1.8300000429153442
+                            Vehicle Length: 2.140000104904175
+                            Vehicle Width: 1.1799999475479126
                           View Path:
                             Alpha: 0.30000001192092896
                             Constant Width: false
@@ -1931,10 +1931,10 @@ Visualization Manager:
                             Alpha: 1
                             Color: 230; 230; 50
                             Offset from BaseLink: 0
-                            Rear Overhang: 1.0299999713897705
+                            Rear Overhang: 0.25
                             Value: false
-                            Vehicle Length: 4.769999980926514
-                            Vehicle Width: 1.8300000429153442
+                            Vehicle Length: 2.140000104904175
+                            Vehicle Width: 1.1799999475479126
                           View Path:
                             Alpha: 0.30000001192092896
                             Constant Width: false
@@ -2611,10 +2611,10 @@ Visualization Manager:
             Alpha: 1
             Color: 230; 230; 50
             Offset from BaseLink: 0
-            Rear Overhang: 1.0299999713897705
+            Rear Overhang: 0.25
             Value: false
-            Vehicle Length: 4.769999980926514
-            Vehicle Width: 1.8300000429153442
+            Vehicle Length: 2.140000104904175
+            Vehicle Width: 1.1799999475479126
           View Path:
             Alpha: 1
             Constant Width: true
@@ -2713,7 +2713,8 @@ Visualization Manager:
               Enabled: true
               Name: VirtualWall (velocity control)
               Namespaces:
-                {}
+                stop_factor_text: true
+                stop_virtual_wall: true
               Topic:
                 Depth: 5
                 Durability Policy: Volatile
@@ -2815,7 +2816,18 @@ Visualization Manager:
                     Value: true
                   Map: true
                   Perception:
-                    "": true
+                    CameraLidarFusion(purple): true
+                    Centerpoint(red1): true
+                    CenterpointROIFusion(red2): true
+                    CenterpointValidator(red3): true
+                    Detection(yellow): true
+                    DetectionByTracker(orange): true
+                    PointPainting(light_green1): true
+                    PointPaintingROIFusion(light_green2): true
+                    PointPaintingValidator(light_green3): true
+                    Prediction(light_blue): true
+                    RadarFarObjects(white): true
+                    Tracking(green): true
                     Value: true
                   Planning:
                     "":
@@ -4708,7 +4720,7 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Angle: 0
+      Angle: 0.004999999888241291
       Class: rviz_default_plugins/TopDownOrtho
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
@@ -4718,11 +4730,11 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Scale: 5.205356121063232
+      Scale: 8.314040184020996
       Target Frame: viewer
       Value: TopDownOrtho (rviz_default_plugins)
-      X: -77.30769348144531
-      Y: 14.2307710647583
+      X: -63.932586669921875
+      Y: 7.744816303253174
     Saved:
       - Class: rviz_default_plugins/ThirdPersonFollower
         Distance: 18
