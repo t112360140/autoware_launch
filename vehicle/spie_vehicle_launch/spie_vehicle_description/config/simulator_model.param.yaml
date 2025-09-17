@@ -1,0 +1,20 @@
+/**:
+  ros__parameters:
+    simulated_frame_id: "base_link" # center of the rear axle. (保持不變，這是慣例)
+    origin_frame_id: "map" # (保持不變)
+    vehicle_model_type: "DELAY_STEER_ACC_GEARED" # 保持這個選項，因為您的車輛可能有延遲和齒輪傳動。
+    initialize_source: "INITIAL_POSE_TOPIC" # (保持不變)
+    timer_sampling_time_ms: 25 # (保持不變，除非您有特定的模擬需求)
+    add_measurement_noise: False # (保持不變，除非您需要模擬雜訊)
+    vel_lim: 24.0 # 根據 YDRE 的最大速度 15 mph (24 km/h)，換算成 m/s: 24 km/h * 1000 m/km / 3600 s/h = 6.67 m/s。這裡原值 24.0 看起來像是 km/h，若要用 m/s 則需改為 6.67。
+    vel_rate_lim: 3.0 # (保持不變，這是加速度限制，若無特定數據則維持)
+    steer_lim: 1.0 # 這是方向盤轉向角度限制。通常會以弧度表示。YDRE 規格中「轉向角度 (左/右) 1.85 圈」不夠明確，需要更多資訊來換算成輪胎轉向角度的限制。如果 1.0 是指徑向 (radian)，那可能需要調整。
+    steer_rate_lim: 5.0 # (保持不變，這是轉向速度限制，若無特定數據則維持)
+    acc_time_delay: 0.1 # (保持不變，這是加速輸入的延遲，若無特定數據則維持)
+    acc_time_constant: 0.1 # (保持不變，這是加速動力學的時間常數，若無特定數據則維持)
+    steer_time_delay: 0.24 # (保持不變，這是轉向輸入的延遲，若無特定數據則維持)
+    steer_time_constant: 0.27 # (保持不變，這是轉向動力學的時間常數，若無特定數據則維持)
+    steer_dead_band: 0.0 # (保持不變，這是轉向死區，若無特定數據則維持)
+    x_stddev: 0.0001 # (保持不變，這是協方差設定，若無特定需求則維持)
+    y_stddev: 0.0001 # (保持不變)
+    enable_road_slope_simulation: true # (保持不變，除非您不希望模擬路面坡度)
