@@ -17,6 +17,9 @@ class SERIAL_SYNC:
         self.PORT = PORT
         self.BAUD_RATE = BAUD_RATE
         self.verbose = verbose
+
+        self.lock = threading.Lock()
+
         try:
             self.try_connect()
             self.connect = True
@@ -46,7 +49,8 @@ class SERIAL_SYNC:
         
         try:
             if self.ser.in_waiting:
-                self.buf += self.ser.read(self.ser.in_waiting)
+                with self.lock:
+                    self.buf += self.ser.read(self.ser.in_waiting)
             while True:
                 if b'E;' in self.buf and b'D\t' in self.buf:
                     start_index = self.buf.find(b'D\t')
@@ -108,7 +112,8 @@ class SERIAL_SYNC:
             sendBuf += hash.to_bytes(1, 'little', signed=False)
             sendBuf = b'D\t'+sendBuf+b'E;'
 
-            self.ser.write(sendBuf)
+            with self.lock:
+                self.ser.write(sendBuf)
             self.last_send_time=time.time() * 1000
         except:
             # self.close()
