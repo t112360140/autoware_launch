@@ -1,5 +1,12 @@
 import rclpy
 from rclpy.node import Node
+from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
+
+from autoware_vehicle_msgs.msg import ControlModeReport
+
+from autoware_control_msgs.msg import Control
+
+import struct
 
 import threading
 import time
@@ -17,6 +24,16 @@ class InterfaceNode(Node):
 
         self.serial_device = SERIAL_SYNC(PORT=port, BAUD_RATE=baud, event=self.serial_callback)
 
+        qos_profile = QoSProfile(
+            reliability=ReliabilityPolicy.BEST_EFFORT,
+            history=HistoryPolicy.KEEP_LAST,
+            depth=1
+        )
+
+        self.ctrl_cmd_sub = self.create_subscription(Control, "/control/command/control_cmd", self.ctrl_cmd_callback, qos_profile)
+
+        self.ctrl_mode_pub = self.create_publisher(ControlModeReport, "/vehicle/status/control_mode", 1)
+
         self._serial_thread = threading.Thread(target=self.serial_loop)
         self._serial_thread.daemon = True # 設為 Daemon，主程式結束時此執行緒會自動結束
         self._serial_thread.start()
@@ -31,7 +48,19 @@ class InterfaceNode(Node):
                 time.sleep(1)
 
     def serial_callback(self, id, data, len):
-        pass
+        stamp = self.get_clock().now().to_msg()
+        if id==0x100 and len==1:
+            ctrl_mode = ControlModeReport()
+            ctrl_mode.stamp = stamp
+            ctrl_mode.mode = struct.unpack("B", data)[0]
+
+            self.ctrl_mode_pub.publish(ctrl_mode)
+        elif id==0x101 and len==1:
+            pass
+    
+    def ctrl_cmd_callback(self, msg: Control):
+        self.serial_device.write(0x100, struct.pack(">f", msg.lateral.steering_tire_angle, msg.longitudinal.velocity), 8)
+
 
 
 def main(args=None):
