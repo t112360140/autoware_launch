@@ -34,6 +34,8 @@ class InterfaceNode(Node):
 
         self.ctrl_mode_pub = self.create_publisher(ControlModeReport, "/vehicle/status/control_mode", 1)
 
+        self.timeout_timer = self.create_timer(0.01, self.timeout_callback)
+
         self._serial_thread = threading.Thread(target=self.serial_loop)
         self._serial_thread.daemon = True # 設為 Daemon，主程式結束時此執行緒會自動結束
         self._serial_thread.start()
@@ -46,14 +48,22 @@ class InterfaceNode(Node):
             except Exception as e:
                 self.get_logger().error(f"Error in serial loop: {e}")
                 time.sleep(1)
+    
+    def timeout_callback(self):
+        if not self.serial_device.ok():
+            ctrl_mode = ControlModeReport(
+                stamp=self.get_clock().now().to_msg(),
+                mode = ControlModeReport.DISENGAGED
+            )
+            self.ctrl_mode_pub.publish(ctrl_mode)
+
 
     def serial_callback(self, id, data, len):
         stamp = self.get_clock().now().to_msg()
-        if id==0x100 and len==1:
+        if id==0x110 and len==1:
             ctrl_mode = ControlModeReport()
             ctrl_mode.stamp = stamp
             ctrl_mode.mode = struct.unpack("B", data)[0]
-
             self.ctrl_mode_pub.publish(ctrl_mode)
         elif id==0x101 and len==1:
             pass
