@@ -2,7 +2,9 @@ import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 
-from autoware_vehicle_msgs.msg import ControlModeReport
+from autoware_vehicle_msgs.msg import GearCommand, TurnIndicatorsCommand, HazardLightsCommand, Engage
+from tier4_vehicle_msgs.msg import VehicleEmergencyStamped
+from autoware_vehicle_msgs.msg import ControlModeReport, VelocityReport, SteeringReport, GearCommand, TurnIndicatorsReport, HazardLightsReport
 
 from autoware_control_msgs.msg import Control
 
@@ -31,6 +33,11 @@ class InterfaceNode(Node):
         )
 
         self.ctrl_cmd_sub = self.create_subscription(Control, "/control/command/control_cmd", self.ctrl_cmd_callback, qos_profile)
+        self.gear_cmd_sub = self.create_subscription(GearCommand, "/control/command/gear_cmd", self.gear_cmd_callback, qos_profile)
+        self.turn_indicators_cmd_sub = self.create_subscription(TurnIndicatorsCommand, "/control/command/turn_indicators_cmd", self.turn_indicators_cmd_callback, qos_profile)
+        self.hazard_lights_cmd_sub = self.create_subscription(HazardLightsCommand, "/control/command/hazard_lights_cmd", self.hazard_lights_cmd_callback, qos_profile)
+        self.engage_sub = self.create_subscription(Engage, "/vehicle/engage", self.engage_callback, qos_profile)
+        self.emergency_cmd_sub = self.create_subscription(VehicleEmergencyStamped, "/control/command/emergency_cmd", self.emergency_cmd_callback, qos_profile)
 
         self.ctrl_mode_pub = self.create_publisher(ControlModeReport, "/vehicle/status/control_mode", 1)
 
@@ -57,7 +64,6 @@ class InterfaceNode(Node):
             )
             self.ctrl_mode_pub.publish(ctrl_mode)
 
-
     def serial_callback(self, id, data, len):
         stamp = self.get_clock().now().to_msg()
         if id==0x110 and len==1:
@@ -65,11 +71,24 @@ class InterfaceNode(Node):
             ctrl_mode.stamp = stamp
             ctrl_mode.mode = struct.unpack("B", data)[0]
             self.ctrl_mode_pub.publish(ctrl_mode)
-        elif id==0x101 and len==1:
-            pass
+        elif id==0x111 and len==4:
+            ctrl_mode = ControlModeReport()
+            ctrl_mode.stamp = stamp
+            ctrl_mode.mode = struct.unpack(">f", data)[0]
+            self.ctrl_mode_pub.publish(ctrl_mode)
     
     def ctrl_cmd_callback(self, msg: Control):
         self.serial_device.write(0x100, struct.pack(">f", msg.lateral.steering_tire_angle, msg.longitudinal.velocity), 8)
+    def gear_cmd_callback(self, msg: GearCommand):
+        self.serial_device.write(0x101, struct.pack("B", msg.command), 1)
+    def turn_indicators_cmd_callback(self, msg: TurnIndicatorsCommand):
+        self.serial_device.write(0x102, struct.pack("B", msg.command), 1)
+    def hazard_lights_cmd_callback(self, msg: HazardLightsCommand):
+        self.serial_device.write(0x103, struct.pack("B", msg.command), 1)
+    def engage_callback(self, msg: Engage):
+        self.serial_device.write(0x104, struct.pack("B", msg.engage), 1)
+    def emergency_cmd_callback(self, msg: VehicleEmergencyStamped):
+        self.serial_device.write(0x105, struct.pack("B", msg.emergency), 1)
 
 
 
