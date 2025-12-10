@@ -2,9 +2,10 @@ import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 
+from std_msgs.msg import Header
 from autoware_vehicle_msgs.msg import GearCommand, TurnIndicatorsCommand, HazardLightsCommand, Engage
 from tier4_vehicle_msgs.msg import VehicleEmergencyStamped
-from autoware_vehicle_msgs.msg import ControlModeReport, VelocityReport, SteeringReport, GearCommand, TurnIndicatorsReport, HazardLightsReport
+from autoware_vehicle_msgs.msg import ControlModeReport, VelocityReport, SteeringReport, GearReport, TurnIndicatorsReport, HazardLightsReport
 
 from autoware_control_msgs.msg import Control
 
@@ -24,6 +25,8 @@ class InterfaceNode(Node):
         baud = self.get_parameter('baudrate').get_parameter_value().integer_value
         self.get_logger().info(f'Connecting to {port} at {baud}...')
 
+        self.frame_id = "spie_car"
+
         self.serial_device = SERIAL_SYNC(PORT=port, BAUD_RATE=baud, event=self.serial_callback)
 
         qos_profile = QoSProfile(
@@ -40,6 +43,11 @@ class InterfaceNode(Node):
         self.emergency_cmd_sub = self.create_subscription(VehicleEmergencyStamped, "/control/command/emergency_cmd", self.emergency_cmd_callback, qos_profile)
 
         self.ctrl_mode_pub = self.create_publisher(ControlModeReport, "/vehicle/status/control_mode", 1)
+        self.velo_repo_pub = self.create_publisher(VelocityReport, "/vehicle/status/velocity_status", 1)
+        self.ster_repo_pub = self.create_publisher(SteeringReport, "/vehicle/status/steering_status", 1)
+        self.gear_repo_pub = self.create_publisher(GearReport, "/vehicle/status/gear_status", 1)
+        self.turn_repo_pub = self.create_publisher(TurnIndicatorsReport, "/vehicle/status/turn_indicators_status", 1)
+        self.haza_repo_pub = self.create_publisher(HazardLightsReport, "/vehicle/status/hazard_lights_status", 1)
 
         self.timeout_timer = self.create_timer(0.01, self.timeout_callback)
 
@@ -60,22 +68,45 @@ class InterfaceNode(Node):
         if not self.serial_device.ok():
             ctrl_mode = ControlModeReport(
                 stamp=self.get_clock().now().to_msg(),
-                mode = ControlModeReport.DISENGAGED
+                mode = ControlModeReport.NOT_READY
             )
             self.ctrl_mode_pub.publish(ctrl_mode)
 
     def serial_callback(self, id, data, len):
         stamp = self.get_clock().now().to_msg()
+        header = Header(stamp=stamp, frame_id=self.frame_id)
         if id==0x110 and len==1:
             ctrl_mode = ControlModeReport()
             ctrl_mode.stamp = stamp
             ctrl_mode.mode = struct.unpack("B", data)[0]
             self.ctrl_mode_pub.publish(ctrl_mode)
         elif id==0x111 and len==4:
-            ctrl_mode = ControlModeReport()
-            ctrl_mode.stamp = stamp
-            ctrl_mode.mode = struct.unpack(">f", data)[0]
-            self.ctrl_mode_pub.publish(ctrl_mode)
+            velo_repo = VelocityReport()
+            velo_repo.header = header
+            velo_repo.longitudinal_velocity = struct.unpack("<f", data)[0]
+            velo_repo.lateral_velocity = 0.0
+            velo_repo.heading_rate = 0.0
+            self.velo_repo_pub.publish(velo_repo)
+        elif id==0x112 and len==4:
+            ster_repo = SteeringReport()
+            ster_repo.stamp = stamp
+            ster_repo.steering_tire_angle = struct.unpack("<f", data)[0]
+            self.ster_repo_pub.publish(ster_repo)
+        elif id==0x113 and len==1:
+            gear_repo = GearReport()
+            gear_repo.stamp = stamp
+            gear_repo.report = struct.unpack("B", data)[0]
+            self.gear_repo_pub.publish(gear_repo)
+        elif id==0x114 and len==1:
+            turn_repo = TurnIndicatorsReport()
+            turn_repo.stamp = stamp
+            turn_repo.report = struct.unpack("B", data)[0]
+            self.turn_repo_pub.publish(turn_repo)
+        elif id==0x115 and len==1:
+            haza_repo = HazardLightsReport()
+            haza_repo.stamp = stamp
+            haza_repo.report = struct.unpack("B", data)[0]
+            self.haza_repo_pub.publish(haza_repo)
     
     def ctrl_cmd_callback(self, msg: Control):
         self.serial_device.write(0x100, struct.pack(">f", msg.lateral.steering_tire_angle, msg.longitudinal.velocity), 8)
