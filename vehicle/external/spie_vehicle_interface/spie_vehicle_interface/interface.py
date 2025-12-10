@@ -15,6 +15,10 @@ import threading
 import time
 from .serial_sync import SERIAL_SYNC
 
+import math
+
+CAR_WHEEL_BASE = 1.64
+
 class InterfaceNode(Node):
     def __init__(self):
         super().__init__('interface_node')
@@ -80,12 +84,12 @@ class InterfaceNode(Node):
             ctrl_mode.stamp = stamp
             ctrl_mode.mode = struct.unpack("B", data)[0]
             self.ctrl_mode_pub.publish(ctrl_mode)
-        elif id==0x111 and len==4:
+        elif id==0x111 and len==8:
             velo_repo = VelocityReport()
             velo_repo.header = header
-            velo_repo.longitudinal_velocity = struct.unpack("<f", data)[0]
+            velo_repo.longitudinal_velocity = struct.unpack("<f", data[0:4])[0]
             velo_repo.lateral_velocity = 0.0
-            velo_repo.heading_rate = 0.0
+            velo_repo.heading_rate = (velo_repo.longitudinal_velocity/CAR_WHEEL_BASE)*math.tan(struct.unpack("<f", data[4:8])[0])
             self.velo_repo_pub.publish(velo_repo)
         elif id==0x112 and len==4:
             ster_repo = SteeringReport()
@@ -109,7 +113,7 @@ class InterfaceNode(Node):
             self.haza_repo_pub.publish(haza_repo)
     
     def ctrl_cmd_callback(self, msg: Control):
-        self.serial_device.write(0x100, struct.pack(">f", msg.lateral.steering_tire_angle, msg.longitudinal.velocity), 8)
+        self.serial_device.write(0x100, struct.pack(">f", msg.lateral.steering_tire_angle)+struct.pack(">f", msg.longitudinal.velocity), 8)
     def gear_cmd_callback(self, msg: GearCommand):
         self.serial_device.write(0x101, struct.pack("B", msg.command), 1)
     def turn_indicators_cmd_callback(self, msg: TurnIndicatorsCommand):
