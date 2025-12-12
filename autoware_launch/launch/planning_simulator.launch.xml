@@ -89,8 +89,9 @@
   <group>
     <let name="launch_dummy_perception" value="false" if="$(var scenario_simulation)"/>
     <let name="launch_dummy_perception" value="true" unless="$(var scenario_simulation)"/>
-    <let name="launch_dummy_vehicle" value="false" if="$(var scenario_simulation)"/>
-    <let name="launch_dummy_vehicle" value="true" unless="$(var scenario_simulation)"/>
+    <!-- <let name="launch_dummy_vehicle" value="false" if="$(var scenario_simulation)"/>
+    <let name="launch_dummy_vehicle" value="true" unless="$(var scenario_simulation)"/> -->
+    <let name="launch_dummy_vehicle" value="false"/>
     <let name="launch_scenario_simulator_v2_adapter" value="$(var scenario_simulation)"/>
 
     <include file="$(find-pkg-share autoware_launch)/launch/components/tier4_simulator_component.launch.xml">

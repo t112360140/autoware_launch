@@ -24,6 +24,7 @@ setup(
     entry_points={
         'console_scripts': [
             'spie_vehicle_interface_exec = spie_vehicle_interface.interface:main',
+            'spie_vehicle_interface_test_exec = spie_vehicle_interface.interface_test:main',
         ],
     },
 )
