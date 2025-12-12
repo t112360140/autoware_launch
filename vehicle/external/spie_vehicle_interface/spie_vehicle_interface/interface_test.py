@@ -59,13 +59,12 @@ class InterfaceTestNode(Node):
         # 新增 IMU Publisher
         self.imu_pub = self.create_publisher(Imu, "/sensing/imu/imu_data", 1)
 
-        # self.timeout_timer = self.create_timer(0.01, self.timeout_callback)
+        self.timeout_timer = self.create_timer(0.01, self.timeout_callback)
+        # self.fake_data_timer = self.create_timer(0.01, self.fake_data_callback)
 
-        self.timeout_timer = self.create_timer(0.01, self.fake_callback)
-
-        # self._serial_thread = threading.Thread(target=self.serial_loop)
-        # self._serial_thread.daemon = True 
-        # self._serial_thread.start()
+        self._serial_thread = threading.Thread(target=self.serial_loop)
+        self._serial_thread.daemon = True 
+        self._serial_thread.start()
     
     def serial_loop(self):
         while rclpy.ok():
@@ -84,7 +83,7 @@ class InterfaceTestNode(Node):
             )
             self.ctrl_mode_pub.publish(ctrl_mode)
 
-    def fake_callback(self):
+    def fake_data_callback(self):
         stamp = self.get_clock().now().to_msg()
         header = Header(stamp=stamp, frame_id=self.frame_id)
 
@@ -179,20 +178,15 @@ class InterfaceTestNode(Node):
             velo_repo.header = header
             velo_repo.longitudinal_velocity = struct.unpack("<f", data[0:4])[0]
             velo_repo.lateral_velocity = 0.0
-            
             velo_repo.heading_rate = (velo_repo.longitudinal_velocity/CAR_WHEEL_BASE)*math.tan(struct.unpack("<f", data[4:8])[0])
             self.velo_repo_pub.publish(velo_repo)
-            
             # 發布同步的 Fake IMU
             self.publish_fake_imu(stamp, velo_repo.heading_rate)
-
         elif id==0x112 and len==4:
             ster_repo = SteeringReport()
             ster_repo.stamp = stamp
             ster_repo.steering_tire_angle = struct.unpack("<f", data)[0]
-            
             self.ster_repo_pub.publish(ster_repo)
-
         elif id==0x113 and len==1:
             gear_repo = GearReport()
             gear_repo.stamp = stamp
