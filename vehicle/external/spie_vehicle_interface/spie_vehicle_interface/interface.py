@@ -113,7 +113,7 @@ class InterfaceNode(Node):
             self.haza_repo_pub.publish(haza_repo)
     
     def ctrl_cmd_callback(self, msg: Control):
-        self.serial_device.write(0x100, struct.pack(">f", msg.lateral.steering_tire_angle)+struct.pack(">f", msg.longitudinal.velocity), 8)
+        self.serial_device.write(0x100, struct.pack("<f", msg.lateral.steering_tire_angle)+struct.pack("<f", msg.longitudinal.velocity), 8)
     def gear_cmd_callback(self, msg: GearCommand):
         self.serial_device.write(0x101, struct.pack("B", msg.command), 1)
     def turn_indicators_cmd_callback(self, msg: TurnIndicatorsCommand):

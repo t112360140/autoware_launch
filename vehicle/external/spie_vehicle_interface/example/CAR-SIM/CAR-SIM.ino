@@ -98,8 +98,8 @@ void loop() {
 
   // 模擬車輛控制輸入
 
-  LOCAL_CTRL.Angle=(((float)button_status[12]-512)/512)*0.698;
-  LOCAL_CTRL.Speed=((512-(float)button_status[10])/512)*6.9;
+  LOCAL_CTRL.Angle=(((float)button_status[9]-512)/512)*0.698;
+  LOCAL_CTRL.Speed=((512-(float)button_status[13])/512)*6.9;
 
   if(PARK_switch.onDown()){
     if(LOCAL_CTRL.Gear==PARK) LOCAL_CTRL.Gear=NEUTRAL;
@@ -111,6 +111,7 @@ void loop() {
   }
   // LOCAL_CTRL.Speed=abs(((512-(float)button_status[10])/512)*6.9)*(LOCAL_CTRL.Gear?-1:1);
 
+
   if(LOCAL_CTRL.TurnIndicators==1){
     if(L_light.onDown()) LOCAL_CTRL.TurnIndicators=2;
     else if(R_light.onDown()) LOCAL_CTRL.TurnIndicators=3;
@@ -121,7 +122,7 @@ void loop() {
     if(L_light.onDown()) LOCAL_CTRL.TurnIndicators=2;
     else if(R_light.onDown()) LOCAL_CTRL.TurnIndicators=1;
   }else{
-    LOCAL_CTRL.TurnIndicators=0;
+    LOCAL_CTRL.TurnIndicators=1;
   }
 
   //--------
@@ -157,7 +158,7 @@ void CONTROL(){
       if(LOCAL_CTRL.Gear==DRIVE) LOCAL_STATUS.Speed=max(LOCAL_CTRL.Speed, 0);
       else if(LOCAL_CTRL.Gear==REVERSE) LOCAL_STATUS.Speed=min(LOCAL_CTRL.Speed, 0);
       else LOCAL_STATUS.Speed=0;
-      LOCAL_STATUS.Angle=LOCAL_CTRL.Angle;
+      if(LOCAL_CTRL.Gear!=PARK) LOCAL_STATUS.Angle=LOCAL_CTRL.Angle;
 
       LOCAL_STATUS.TurnIndicators=LOCAL_CTRL.TurnIndicators;
 
@@ -177,7 +178,7 @@ void CONTROL(){
       else MODE_STATUS=MODE_ERROR;
       break;
     case MODE_REMOTE:
-      if(REMOTE_CTRL.Engage){
+      if(true||REMOTE_CTRL.Engage){       // 無視了Engage，要找一下原因
         LOCAL_STATUS.Gear=REMOTE_CTRL.Gear;
 
         if(REMOTE_CTRL.Gear==DRIVE) LOCAL_STATUS.Speed=max(REMOTE_CTRL.Speed, 0);
@@ -294,7 +295,10 @@ void msg_loop(){
   serial_sync.send(data);
 }
 
+bool led_timer=false;
 void led_ctl(){
+  led_timer=!led_timer;
+
   switch(MODE_STATUS){
     case MODE_INIT:
     case MODE_STOP:
@@ -412,9 +416,9 @@ void loop1(){
   else if(LOCAL_STATUS.Gear==REVERSE) display_L.print("R");
   else if(LOCAL_STATUS.Gear==PARK) display_L.print("P");
   else display_L.print("E");
-  display_L.print("\nA: ");
+  display_L.print("\nA:");
   print_float(display_L, LOCAL_STATUS.Angle);
-  display_L.print(" S: ");
+  display_L.print(" S:");
   print_float(display_L, LOCAL_STATUS.Speed);
   display_L.print("\nLOCAL_CTRL:  Gear: ");
   if(LOCAL_CTRL.Gear==NEUTRAL) display_L.print("N");
@@ -422,9 +426,9 @@ void loop1(){
   else if(LOCAL_CTRL.Gear==REVERSE) display_L.print("R");
   else if(LOCAL_CTRL.Gear==PARK) display_L.print("P");
   else display_L.print("E");
-  display_L.print("\nA: ");
+  display_L.print("\nA:");
   print_float(display_L, LOCAL_CTRL.Angle);
-  display_L.print(" S: ");
+  display_L.print(" S:");
   print_float(display_L, LOCAL_CTRL.Speed);
   display_L.print("\nREMOTE_CTRL: Gear: ");
   if(REMOTE_CTRL.Gear==NEUTRAL) display_L.print("N");
@@ -432,32 +436,18 @@ void loop1(){
   else if(REMOTE_CTRL.Gear==REVERSE) display_L.print("R");
   else if(REMOTE_CTRL.Gear==PARK) display_L.print("P");
   else display_L.print("E");
-  display_L.print("\nA: ");
+  display_L.print("\nA:");
   print_float(display_L, REMOTE_CTRL.Angle);
-  display_L.print(" S: ");
+  display_L.print(" S:");
   print_float(display_L, REMOTE_CTRL.Speed);
+  display_L.print("\nEngage: ");
+  display_L.print(REMOTE_CTRL.Engage);
   display_L.display();
   
   display_R.clearDisplay();
-  display_R.setCursor(0,0);
-  for(int i=0;i<4;i++){
-    display_R.print(button_status[i]);
-    display_R.print(' ');
-  }
-  display_R.print('\n');
-  for(int i=7;i>=4;i--){
-    display_R.print(button_status[i]);
-    display_R.print(' ');
-  }
-  display_R.print("\nR: ");
-  for(int i=0;i<3;i++){
-    display_R.print(button_status[8+i]);
-    display_R.print(" ");
-  }
-  display_R.print("\nL: ");
-  for(int i=0;i<3;i++){
-    display_R.print(button_status[11+i]);
-    display_R.print(" ");
-  }
+  if(LOCAL_STATUS.TurnIndicators==2&&led_timer) display_R.fillRect(0, 0, 16, 16, SH110X_WHITE);
+  else display_R.drawRect(0, 0, 16, 16, SH110X_WHITE);
+  if(LOCAL_STATUS.TurnIndicators==3&&led_timer) display_R.fillRect(128-16, 0, 16, 16, SH110X_WHITE);
+  else display_R.drawRect(128-16, 0, 16, 16, SH110X_WHITE);
   display_R.display();
 }

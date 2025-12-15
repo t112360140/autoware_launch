@@ -9,6 +9,7 @@ from sensor_msgs.msg import Imu
 from autoware_vehicle_msgs.msg import GearCommand, TurnIndicatorsCommand, HazardLightsCommand, Engage
 from tier4_vehicle_msgs.msg import VehicleEmergencyStamped
 from autoware_vehicle_msgs.msg import ControlModeReport, VelocityReport, SteeringReport, GearReport, TurnIndicatorsReport, HazardLightsReport
+from autoware_vehicle_msgs.srv import ControlModeCommand
 
 from autoware_control_msgs.msg import Control
 
@@ -56,6 +57,8 @@ class InterfaceTestNode(Node):
         self.turn_repo_pub = self.create_publisher(TurnIndicatorsReport, "/vehicle/status/turn_indicators_status", 1)
         self.haza_repo_pub = self.create_publisher(HazardLightsReport, "/vehicle/status/hazard_lights_status", 1)
         
+        self.srv_mode_req = self.create_service(ControlModeCommand, "/control/control_mode_request", self.on_control_mode_request)
+
         # 新增 IMU Publisher
         self.imu_pub = self.create_publisher(Imu, "/sensing/imu/imu_data", 1)
 
@@ -82,6 +85,11 @@ class InterfaceTestNode(Node):
                 mode = ControlModeReport.NOT_READY
             )
             self.ctrl_mode_pub.publish(ctrl_mode)
+
+    def on_control_mode_request(self, request, response):
+        response.success = True
+        self.get_logger().info(f"Autoware requested mode: {request.mode}, responding SUCCESS")
+        return response
 
     def fake_data_callback(self):
         stamp = self.get_clock().now().to_msg()
@@ -204,7 +212,7 @@ class InterfaceTestNode(Node):
             self.haza_repo_pub.publish(haza_repo)
     
     def ctrl_cmd_callback(self, msg: Control):
-        self.serial_device.write(0x100, struct.pack(">f", msg.lateral.steering_tire_angle)+struct.pack(">f", msg.longitudinal.velocity), 8)
+        self.serial_device.write(0x100, struct.pack("<f", msg.lateral.steering_tire_angle)+struct.pack("<f", msg.longitudinal.velocity), 8)
     def gear_cmd_callback(self, msg: GearCommand):
         self.serial_device.write(0x101, struct.pack("B", msg.command), 1)
     def turn_indicators_cmd_callback(self, msg: TurnIndicatorsCommand):
