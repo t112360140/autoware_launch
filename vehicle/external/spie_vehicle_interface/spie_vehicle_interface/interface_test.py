@@ -57,7 +57,7 @@ class InterfaceTestNode(Node):
         self.turn_repo_pub = self.create_publisher(TurnIndicatorsReport, "/vehicle/status/turn_indicators_status", 1)
         self.haza_repo_pub = self.create_publisher(HazardLightsReport, "/vehicle/status/hazard_lights_status", 1)
         
-        self.srv_mode_req = self.create_service(ControlModeCommand, "/control/control_mode_request", self.on_control_mode_request)
+        # self.srv_mode_req = self.create_service(ControlModeCommand, "/control/control_mode_request", self.on_control_mode_request)
 
         # 新增 IMU Publisher
         self.imu_pub = self.create_publisher(Imu, "/sensing/imu/imu_data", 1)
