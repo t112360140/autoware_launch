@@ -185,6 +185,9 @@ void CONTROL(){
         else if(REMOTE_CTRL.Gear==REVERSE) LOCAL_STATUS.Speed=min(REMOTE_CTRL.Speed, 0);
         else LOCAL_STATUS.Speed=0;
         LOCAL_STATUS.Angle=REMOTE_CTRL.Angle;
+
+        LOCAL_STATUS.TurnIndicators=REMOTE_CTRL.TurnIndicators;
+        LOCAL_STATUS.HazardLights=REMOTE_CTRL.HazardLights;
       }else{
         LOCAL_STATUS.Speed=0;
 

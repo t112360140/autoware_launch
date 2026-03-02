@@ -82,7 +82,7 @@ class InterfaceTestNode(Node):
         if not self.serial_device.ok():
             ctrl_mode = ControlModeReport(
                 stamp=self.get_clock().now().to_msg(),
-                mode = ControlModeReport.NOT_READY
+                mode = ControlModeReport.DISENGAGED
             )
             self.ctrl_mode_pub.publish(ctrl_mode)
 
