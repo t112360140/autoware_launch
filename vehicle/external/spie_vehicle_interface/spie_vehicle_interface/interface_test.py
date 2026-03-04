@@ -47,7 +47,7 @@ class InterfaceTestNode(Node):
         self.gear_cmd_sub = self.create_subscription(GearCommand, "/control/command/gear_cmd", self.gear_cmd_callback, qos_profile)
         self.turn_indicators_cmd_sub = self.create_subscription(TurnIndicatorsCommand, "/control/command/turn_indicators_cmd", self.turn_indicators_cmd_callback, qos_profile)
         self.hazard_lights_cmd_sub = self.create_subscription(HazardLightsCommand, "/control/command/hazard_lights_cmd", self.hazard_lights_cmd_callback, qos_profile)
-        self.engage_sub = self.create_subscription(Engage, "/vehicle/engage", self.engage_callback, qos_profile)
+        # self.engage_sub = self.create_subscription(Engage, "/autoware/engage", self.engage_callback, qos_profile)
         self.emergency_cmd_sub = self.create_subscription(VehicleEmergencyStamped, "/control/command/emergency_cmd", self.emergency_cmd_callback, qos_profile)
 
         self.ctrl_mode_pub = self.create_publisher(ControlModeReport, "/vehicle/status/control_mode", 1)
