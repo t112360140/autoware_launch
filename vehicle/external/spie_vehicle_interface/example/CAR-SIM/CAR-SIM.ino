@@ -36,7 +36,6 @@ struct {
   uint8_t Gear=0;
   uint8_t TurnIndicators=0;
   uint8_t HazardLights=0;
-  bool Engage=false;
   bool Emergency=false;
 } REMOTE_CTRL;
 
@@ -178,21 +177,15 @@ void CONTROL(){
       else MODE_STATUS=MODE_ERROR;
       break;
     case MODE_REMOTE:
-      if(true||REMOTE_CTRL.Engage){       // 無視了Engage，要找一下原因
-        LOCAL_STATUS.Gear=REMOTE_CTRL.Gear;
+      LOCAL_STATUS.Gear=REMOTE_CTRL.Gear;
 
-        if(REMOTE_CTRL.Gear==DRIVE) LOCAL_STATUS.Speed=max(REMOTE_CTRL.Speed, 0);
-        else if(REMOTE_CTRL.Gear==REVERSE) LOCAL_STATUS.Speed=min(REMOTE_CTRL.Speed, 0);
-        else LOCAL_STATUS.Speed=0;
-        LOCAL_STATUS.Angle=REMOTE_CTRL.Angle;
+      if(REMOTE_CTRL.Gear==DRIVE) LOCAL_STATUS.Speed=max(REMOTE_CTRL.Speed, 0);
+      else if(REMOTE_CTRL.Gear==REVERSE) LOCAL_STATUS.Speed=min(REMOTE_CTRL.Speed, 0);
+      else LOCAL_STATUS.Speed=0;
+      LOCAL_STATUS.Angle=REMOTE_CTRL.Angle;
 
-        LOCAL_STATUS.TurnIndicators=REMOTE_CTRL.TurnIndicators;
-        LOCAL_STATUS.HazardLights=REMOTE_CTRL.HazardLights;
-      }else{
-        LOCAL_STATUS.Speed=0;
-
-        LOCAL_STATUS.Gear=PARK;
-      }
+      LOCAL_STATUS.TurnIndicators=REMOTE_CTRL.TurnIndicators;
+      LOCAL_STATUS.HazardLights=REMOTE_CTRL.HazardLights;
 
       if(Auto_Switch.onDown()) MODE_STATUS=MODE_LOCAL;
       if(serial_sync.get_status()!=SERIAL_OK) MODE_STATUS=MODE_ERROR;
@@ -238,11 +231,6 @@ void get_serial(SERIAL_SYNC::Data data){
       }
       break;
     case 0x104:
-      if(data.len==1){
-        REMOTE_CTRL.Engage = data.data[0];
-      }
-      break;
-    case 0x105:
       if(data.len==1){
         REMOTE_CTRL.Emergency = data.data[0];
       }

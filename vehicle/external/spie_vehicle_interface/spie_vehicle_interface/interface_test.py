@@ -219,10 +219,10 @@ class InterfaceTestNode(Node):
         self.serial_device.write(0x102, struct.pack("B", msg.command), 1)
     def hazard_lights_cmd_callback(self, msg: HazardLightsCommand):
         self.serial_device.write(0x103, struct.pack("B", msg.command), 1)
-    def engage_callback(self, msg: Engage):
-        self.serial_device.write(0x104, struct.pack("B", msg.engage), 1)
+    # def engage_callback(self, msg: Engage):
+    #     self.serial_device.write(0x104, struct.pack("B", msg.engage), 1)
     def emergency_cmd_callback(self, msg: VehicleEmergencyStamped):
-        self.serial_device.write(0x105, struct.pack("B", msg.emergency), 1)
+        self.serial_device.write(0x104, struct.pack("B", msg.emergency), 1)
 
 def main(args=None):
     rclpy.init(args=args)
