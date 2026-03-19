@@ -2,6 +2,7 @@
     <!-- <node pkg="spie_vehicle_interface" exec="spie_vehicle_interface_exec" name="spie_vehicle_interface_node" output="screen"> -->
     <node pkg="spie_vehicle_interface" exec="spie_vehicle_interface_test_exec" name="spie_vehicle_interface_test_node" output="screen">
         <param name="port" value="/dev/serial/by-id/usb-Seeed_XIAO_RP2040_4250305031363913-if00"/>
+        <!--usb-Seeed_XIAO_nRF52840_Sense_C0ABD75A4022435C-if00-->
     </node>
 
 

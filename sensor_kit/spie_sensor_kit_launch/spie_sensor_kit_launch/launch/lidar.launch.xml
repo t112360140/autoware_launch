@@ -24,7 +24,7 @@
       </include>
     </group>
 
-    <!-- <group>
+    <group>
       <push-ros-namespace namespace="left"/>
       <include file="$(find-pkg-share common_sensor_launch)/launch/velodyne_VLP16.launch.xml">
         <arg name="max_range" value="5.0"/>
@@ -58,7 +58,7 @@
       </include>
     </group>
 
-    <group>
+    <!-- <group>
       <push-ros-namespace namespace="rear"/>
       <include file="$(find-pkg-share common_sensor_launch)/launch/velodyne_VLP16.launch.xml">
         <arg name="max_range" value="1.5"/>
