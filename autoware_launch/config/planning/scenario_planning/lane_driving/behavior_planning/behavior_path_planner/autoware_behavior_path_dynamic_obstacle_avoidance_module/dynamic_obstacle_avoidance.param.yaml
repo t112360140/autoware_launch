@@ -45,7 +45,7 @@
         front_object:
           max_object_angle: 0.785
           min_object_vel: -0.5               # [m/s] The value is negative considering the noisy velocity of the stopped vehicle.
-          max_ego_path_lat_cover_ratio: 0.3  # [-] The object will be ignored if the ratio of the object covering the ego's path is higher than this value.
+          max_ego_path_lat_cover_ratio:  0.3  # [-] The object will be ignored if the ratio of the object covering the ego's path is higher than this value.
 
         stopped_object:
           max_object_vel: 0.5 # [m/s] The object will be determined as stopped if the velocity is smaller than this value.
