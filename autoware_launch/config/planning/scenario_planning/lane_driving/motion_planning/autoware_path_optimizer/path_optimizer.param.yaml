@@ -8,8 +8,8 @@
 
       debug:
         # flag to publish
-        enable_pub_debug_marker: false           # publish debug marker
-        enable_pub_extra_debug_marker: false    # publish extra debug marker
+        enable_pub_debug_marker: true           # publish debug marker
+        enable_pub_extra_debug_marker: true    # publish extra debug marker
 
         # flag to show
         enable_debug_info: false
@@ -62,7 +62,7 @@
       # weight parameter for optimization
       weight:
         # collision free
-        soft_collision_free_weight: 1.0        # soft weight for lateral error around the middle point
+        soft_collision_free_weight: 10.0        # soft weight for lateral error around the middle point
 
         # tracking error
         lat_error_weight: 1.0       # weight for lateral error
@@ -78,18 +78,18 @@
 
       # avoidance
       avoidance:
-        max_bound_fixing_time: 1.0 # [s]
+        max_bound_fixing_time: 0.2 # [s]
         max_longitudinal_margin_for_bound_violation: 1.0 # [m]
-        max_avoidance_cost: 0.5                          # [m]
+        max_avoidance_cost: 1.5                          # [m]
         avoidance_cost_margin: 0.0                       # [m]
-        avoidance_cost_band_length: 5.0                  # [m]
+        avoidance_cost_band_length: 15.0                  # [m]
         avoidance_cost_decrease_rate: 0.05               # decreased cost per point interval
         min_drivable_width: 0.2                          # [m] The vehicle width and this parameter is guaranteed to keep for collision free constraint.
 
         weight:
           lat_error_weight: 0.0     # weight for lateral error
-          yaw_error_weight: 10.0    # weight for yaw error
-          steer_input_weight: 100.0 # weight for yaw error
+          yaw_error_weight: 1.0    # weight for yaw error
+          steer_input_weight: 1.0 # weight for yaw error
 
       # collision free constraint for optimization
       collision_free_constraints:

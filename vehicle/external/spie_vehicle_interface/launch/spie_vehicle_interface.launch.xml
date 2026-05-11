@@ -1,15 +1,21 @@
 <launch>
     <!-- <node pkg="spie_vehicle_interface" exec="spie_vehicle_interface_exec" name="spie_vehicle_interface_node" output="screen"> -->
-    <node pkg="spie_vehicle_interface" exec="spie_vehicle_interface_test_exec" name="spie_vehicle_interface_test_node" output="screen">
-        <param name="port" value="/dev/serial/by-id/usb-Seeed_XIAO_RP2040_4250305031363913-if00"/>
-        <!--usb-Seeed_XIAO_nRF52840_Sense_C0ABD75A4022435C-if00-->
+    <node pkg="spie_vehicle_interface" exec="spie_vehicle_interface_exec" name="spie_vehicle_interface_node" output="screen">
+        <param name="port" value="/dev/serial/by-id/usb-Seeed_XIAO_nRF52840_Sense_C0ABD75A4022435C-if00"/>
+        <param name="gyro_base_x" value="-0.0028"/>
+        <param name="gyro_base_y" value="0.1000"/>
+        <param name="gyro_base_z" value="0.0268"/>
     </node>
+    <!--<node pkg="spie_vehicle_interface" exec="spie_vehicle_interface_test_exec" name="spie_vehicle_interface_test_node" output="screen">
+        <param name="port" value="/dev/serial/by-id/usb-Seeed_XIAO_nRF52840_Sense_C0ABD75A4022435C-if00"/>
+    </node>-->
+    <!--usb-Seeed_XIAO_nRF52840_Sense_C0ABD75A4022435C-if00-->
 
 
     <include file="$(find-pkg-share rosbridge_server)/launch/rosbridge_websocket_launch.xml">
     </include>
-    <node pkg="web_video_server" exec="web_video_server" name="web_video_server_node" output="screen">
+    <!--<node pkg="web_video_server" exec="web_video_server" name="web_video_server_node" output="screen">
         <param name="port" value="8080"/>
         <param name="address" value="0.0.0.0"/>
-    </node>
+    </node>-->
 </launch>

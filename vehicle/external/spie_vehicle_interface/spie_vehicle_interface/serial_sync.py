@@ -130,7 +130,12 @@ class SERIAL_SYNC:
         self.connect = False
         try:
             if self.ser:
+                try:
+                    self.ser.reset_input_buffer()
+                    self.ser.reset_output_buffer()
+                except:
+                    pass
                 self.ser.close()
-                self.ser=None
+                self.ser = None
         except:
             pass
