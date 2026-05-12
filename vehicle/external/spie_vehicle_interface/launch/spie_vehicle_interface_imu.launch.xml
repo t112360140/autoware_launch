@@ -1,0 +1,9 @@
+<launch>
+    <!-- <node pkg="spie_vehicle_interface" exec="spie_vehicle_interface_exec" name="spie_vehicle_interface_node" output="screen"> -->
+    <node pkg="spie_vehicle_interface" exec="spie_vehicle_interface_imu_exec" name="spie_vehicle_interface_imu_node" output="screen">
+        <param name="port" value="/dev/serial/by-id/usb-Seeed_XIAO_nRF52840_Sense_C0ABD75A4022435C-if00"/>
+        <param name="gyro_base_x" value="-0.0028"/>
+        <param name="gyro_base_y" value="0.1000"/>
+        <param name="gyro_base_z" value="0.0268"/>
+    </node>
+</launch>
