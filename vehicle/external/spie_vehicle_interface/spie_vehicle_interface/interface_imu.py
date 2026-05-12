@@ -36,9 +36,11 @@ class InterfaceNode(Node):
 
         self.serial_device = SERIAL_SYNC(PORT=port, BAUD_RATE=baud, event=self.serial_callback)
         
-        self.imu_pub = self.create_publisher(Imu, "/sensing/imu/imu_data", 1)
+        self.imu_pub = self.create_publisher(Imu, "/imu/data_raw", 1)
 
         self.timeout_timer = self.create_timer(0.01, self.timeout_callback)
+        
+        self.error_log_timer = self.create_timer(0.5, self.error_log_callback)
 
         self.is_running = True
         self._serial_thread = threading.Thread(target=self.serial_loop)
@@ -61,7 +63,12 @@ class InterfaceNode(Node):
                     time.sleep(0.1)
     
     def timeout_callback(self):
-        pass
+        if not self.serial_device.ok():
+            self.get_logger().error(f"Serlai Error!")
+            
+    def error_log_callback(self):
+        if not self.serial_device.ok():
+            self.get_logger().error(f"Serial Error!")
 
     def serial_callback(self, id, data, len):
         stamp = self.get_clock().now().to_msg()
