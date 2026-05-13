@@ -9,7 +9,7 @@ class ImuSubscriber(Node):
         # 訂閱 /imu 話題，隊列長度為 10
         self.subscription = self.create_subscription(
             Imu,
-            '/imu/data',
+            '/imu/data_raw',
             self.listener_callback,
             10)
         
