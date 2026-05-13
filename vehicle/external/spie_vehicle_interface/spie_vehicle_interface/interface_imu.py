@@ -33,6 +33,7 @@ class InterfaceNode(Node):
         self.gyro_base_z = self.get_parameter('gyro_base_z').get_parameter_value().double_value
 
         self.frame_id = "base_link"
+        self.imu_frame_id = "imu_link"
 
         self.serial_device = SERIAL_SYNC(PORT=port, BAUD_RATE=baud, event=self.serial_callback)
         
@@ -82,6 +83,7 @@ class InterfaceNode(Node):
                 
             imu_msg = Imu()
             imu_msg.header = header
+            imu_msg.header.frame_id = self.imu_frame_id
             imu_msg.linear_acceleration.x = struct.unpack("<f", self.last_accel_data[0:4])[0]
             imu_msg.linear_acceleration.y = struct.unpack("<f", self.last_accel_data[4:8])[0]
             imu_msg.linear_acceleration.z = struct.unpack("<f", self.last_accel_data[8:12])[0]
