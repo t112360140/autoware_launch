@@ -56,8 +56,9 @@ class SERIAL_SYNC:
                     start_index = self.buf.find(b'D\t')
                     if start_index<0:
                         break
-                    end_index = self.buf.find(b'E;')
+                    end_index = self.buf.find(b'E;', start_index)
                     if end_index<0:
+                        self.buf = self.buf[start_index:]
                         break
                     data_raw = self.buf[(start_index+2):end_index]
                     self.buf=self.buf[end_index+2:]
