@@ -1,6 +1,6 @@
 <launch>
   <arg name="launch_driver" default="true"/>
-  <arg name="host_ip" default="192.168.1.10"/>
+  <arg name="host_ip" default="192.168.1.100"/>
   <arg name="use_concat_filter" default="true"/>
   <arg name="vehicle_id" default="$(env VEHICLE_ID default)"/>
   <arg name="vehicle_mirror_param_file"/>
@@ -24,7 +24,7 @@
       </include>
     </group>
 
-    <group>
+    <!-- <group>
       <push-ros-namespace namespace="left"/>
       <include file="$(find-pkg-share common_sensor_launch)/launch/velodyne_VLP16.launch.xml">
         <arg name="max_range" value="5.0"/>
@@ -39,9 +39,9 @@
         <arg name="vehicle_mirror_param_file" value="$(var vehicle_mirror_param_file)"/>
         <arg name="container_name" value="pointcloud_container"/>
       </include>
-    </group>
+    </group> -->
 
-    <group>
+    <!-- <group>
       <push-ros-namespace namespace="right"/>
       <include file="$(find-pkg-share common_sensor_launch)/launch/velodyne_VLP16.launch.xml">
         <arg name="max_range" value="5.0"/>
@@ -56,7 +56,7 @@
         <arg name="vehicle_mirror_param_file" value="$(var vehicle_mirror_param_file)"/>
         <arg name="container_name" value="pointcloud_container"/>
       </include>
-    </group>
+    </group> -->
 
     <!-- <group>
       <push-ros-namespace namespace="rear"/>
@@ -73,7 +73,7 @@
         <arg name="vehicle_mirror_param_file" value="$(var vehicle_mirror_param_file)"/>
         <arg name="container_name" value="pointcloud_container"/>
       </include>
-    </group> -->
+    </group>-->
 
     <include file="$(find-pkg-share spie_sensor_kit_launch)/launch/pointcloud_preprocessor.launch.py">
       <arg name="base_frame" value="base_link"/>
