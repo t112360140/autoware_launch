@@ -62,7 +62,7 @@ class InterfaceNode(Node):
         self.turn_repo_pub = self.create_publisher(TurnIndicatorsReport, "/vehicle/status/turn_indicators_status", 1)
         self.haza_repo_pub = self.create_publisher(HazardLightsReport, "/vehicle/status/hazard_lights_status", 1)
         
-        self.imu_pub = self.create_publisher(Imu, "/sensing/imu/imu_data", 1)
+        self.imu_pub = self.create_publisher(Imu, "imu/data_raw", 1)
 
         self.timeout_timer = self.create_timer(0.01, self.timeout_callback)
         

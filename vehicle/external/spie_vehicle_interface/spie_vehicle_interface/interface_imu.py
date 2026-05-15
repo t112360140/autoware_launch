@@ -37,7 +37,7 @@ class InterfaceNode(Node):
 
         self.serial_device = SERIAL_SYNC(PORT=port, BAUD_RATE=baud, event=self.serial_callback)
         
-        self.imu_pub = self.create_publisher(Imu, "/imu/data_raw", 1)
+        self.imu_pub = self.create_publisher(Imu, "imu/data_raw", 1)
 
         # self.timeout_timer = self.create_timer(0.01, self.timeout_callback)
         
